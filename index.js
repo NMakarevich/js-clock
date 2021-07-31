@@ -1,22 +1,9 @@
-import TIMEZONES from "./TIMEZONES.js"
 const MONTH = ['января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'];
 const DAY = ['воскресенье', 'понедельник', 'вторник', 'среда', 'четверг', 'пятница', 'суббота'];
 let clockCounter = 0;
 
 const addButton = document.querySelector('.add-button');
 const clockContainer = document.querySelector('.clock-container');
-
-function findMatches(wordToMatch) {
-  return TIMEZONES.filter(place => place.city.toLowerCase().slice(0, wordToMatch.length) == wordToMatch.toLowerCase());
-}
-
-function displayMatches() {
-  const matchArray = findMatches(this.value);
-  const html = matchArray.map(place => {
-    return `<li>${place.city}</li>`;
-  }).join('');
-  suggestions.innerHTML = html;
-}
 
 function addClock() {
   clockCounter++
@@ -135,19 +122,51 @@ function focusOUT() {
   hiddenToggle();
 }
 
-input.addEventListener('input', displayMatches)
+input.addEventListener('keydown', displayMatches)
 input.addEventListener('focusout', () => {
   document.addEventListener('click', focusOUT);
 })
 
 suggestions.addEventListener('click', selectCity)
 
+const API_KEY = 'e983448d8ba240cea1771e32e1f7f674'
+const API_URL = 'https://api.opencagedata.com/geocode/v1/json?q='
+
+function makeFetchURL(city) {
+  return `${API_URL}${city}&key=${API_KEY}&language=ru&pretty=1`;
+}
+
+let cityList = []
+async function displayMatches(event) {
+  if (event.code != 'Enter') return;
+
+  const city = input.value;
+  cityList = await getCitiesList(city);
+  const html = cityList.map(place => {
+    return `<li>${place.cityName}</li>`;
+  }).join('');
+  suggestions.innerHTML = html;
+}
+
+async function getCitiesList(city) {
+  const promise = await fetch(makeFetchURL(city));
+  const response = await promise.json();
+  const data = await response.results.filter(item => item.components._type == 'city');
+  const formattedData = await data.map(item => {
+    let obj = {};
+    obj.cityName = item.formatted;
+    obj.timeZone = item.annotations.timezone.offset_string;
+    return obj;
+  })
+  return formattedData;
+}
+
 function selectCity(event) {
   const target = event.target.closest('li');
   if (!target) return;
-  input.value = target.textContent;
-  utc = TIMEZONES.find(item => item.city == input.value)['UTC'];
-  cityName.textContent = input.value;
+  const timezone = cityList.find(item => item.cityName == target.textContent)['timeZone'].slice(0,3);
+  utc = parseInt(timezone)
+  cityName.textContent = target.textContent.split(',')[0];
   hiddenToggle();
 }
 
