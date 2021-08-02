@@ -3,7 +3,9 @@ const DAY = ['воскресенье', 'понедельник', 'вторник
 let clockCounter = 0;
 
 const addButton = document.querySelector('.add-button');
-const clockContainer = document.querySelector('.clock-container');
+const clockContainer = document.querySelector('.container');
+
+addButton.addEventListener('click', addClock)
 
 function addClock() {
   clockCounter++
@@ -18,6 +20,7 @@ function createElement(html) {
 
 function clockTemplate(number) {
   return `<div class="wrapper">
+  <div class="clock-container">
     <div class="clock">
       <div class="clock-face">
         <ul class="signs">
@@ -52,6 +55,7 @@ function clockTemplate(number) {
       <p class="city-name">Москва</p>
       <input type="text" name="" hidden>
       <ul class="suggestions" hidden="false"></ul>
+    </div>
     </div>
   </div>`
 }
@@ -116,6 +120,7 @@ cityName.addEventListener('click', () => {
   hiddenToggle();
   input.value = cityName.textContent;
   input.focus();
+  input.select();
 })
 
 function focusOUT() {
