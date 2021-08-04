@@ -83,9 +83,9 @@ function setTime() {
     now.getSeconds()
   )
 
-  const seconds = newDate.getSeconds() < 10 ? '0' + newDate.getSeconds() : newDate.getSeconds();
-  const minutes = newDate.getMinutes() < 10 ? '0' + newDate.getMinutes() : newDate.getMinutes();
-  const hours = newDate.getHours() < 10 ? '0' + newDate.getHours() : newDate.getHours();
+  const seconds = newDate.getSeconds();
+  const minutes = newDate.getMinutes();
+  const hours = newDate.getHours();
   const date = newDate.getDate();
   const month = newDate.getMonth();
   const year = newDate.getFullYear();
@@ -98,7 +98,7 @@ function setTime() {
   minHand.style.transform = `rotate(${minHandPosition}deg)`
   hourHand.style.transform = `rotate(${hourHandPosition}deg)`
 
-  digitTime.innerHTML = `${hours}:${minutes}:${seconds}`
+  digitTime.innerHTML = newDate.toLocaleTimeString();
   digitDate.innerHTML = `${date} ${MONTH[month]} ${year}`
 }
 
