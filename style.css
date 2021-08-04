@@ -19,6 +19,7 @@ body {
 
 .container {
   display: flex;
+  justify-content: center;
   flex-wrap: wrap;
   gap: 75px;
   max-width: 1200px;
@@ -33,7 +34,6 @@ body {
   width: 350px;
   height: 450px;
 }
-
 
 .clock-container {
   display: flex;
@@ -189,12 +189,45 @@ ul {
   text-transform: uppercase;
 }
 
+.input-field {
+  display: none;
+  width: 80%;
+  justify-content: center;
+  align-items: center;
+  border: 2px solid black;
+  border-radius: 3px;
+}
+
+.input-field.active {
+  display: flex;
+}
+
 input {
+  flex: 1;
   padding: 5px;
-  width: 200px;
-  height: 20px;
-  font-size: 20px;
+  width: 160px;
+  height: 22px;
+  font-size: 22px;
   background-color: transparent;
+  border: none;
+  border-radius: 3px;
+  outline: none;
+}
+
+.search {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  padding: 3px;
+  box-sizing: border-box;
+  background-color: transparent;
+  background-image: url("search.svg");
+  background-position: 50% 50%;
+  background-size: 95% 95%;
+  background-repeat: no-repeat;
+  border: none;
+  border-left: 2px solid black;
+  cursor: pointer;
 }
 
 .suggestions {
@@ -208,7 +241,9 @@ input {
 }
 
 .suggestions li {
+  padding: 5px;
   background-color: #e5e5e5;
+  cursor: auto;
 }
 
 .suggestions li:hover {

@@ -5,7 +5,7 @@ let clockCounter = 0;
 const addButton = document.querySelector('.add-button');
 const clockContainer = document.querySelector('.container');
 
-addButton.addEventListener('click', addClock)
+//addButton.addEventListener('click', addClock)
 
 function addClock() {
   clockCounter++
@@ -53,7 +53,10 @@ function clockTemplate(number) {
     </div>
     <div class="city-container">
       <p class="city-name">Москва</p>
-      <input type="text" name="" hidden>
+      <div class="input-field" hidden>
+        <input type="text" name="" >
+        <button type="button" class="search"></button>
+      </div>
       <ul class="suggestions" hidden="false"></ul>
     </div>
     </div>
@@ -104,13 +107,15 @@ addClock();
 const hourSigns = document.querySelectorAll('.hour-sign');
 hourSigns.forEach((hourSign, index) => hourSign.style.transform = `rotate(${30 * index}deg)`)
 
-const input = document.querySelector('input');
+const inputField = document.querySelector('.input-field');
+const input = document.querySelector('input')
 const suggestions = document.querySelector('.suggestions');
 const cityName = document.querySelector('.city-name');
+const searchButton = document.querySelector('.search')
 
 function hiddenToggle() {
   cityName.hidden = !cityName.hidden;
-  input.hidden = !input.hidden;
+  inputField.classList.toggle('active')
   suggestions.hidden = !suggestions.hidden;
   suggestions.innerHTML = '';
   document.removeEventListener('click', focusOUT)
@@ -123,11 +128,14 @@ cityName.addEventListener('click', () => {
   input.select();
 })
 
-function focusOUT() {
-  hiddenToggle();
+function focusOUT(event) {
+  const target = event.target;
+  if (target.classList.contains('container') || target.tagName == 'HTML') {
+    hiddenToggle();
+  }
 }
 
-input.addEventListener('keydown', displayMatches)
+searchButton.addEventListener('click', displayMatches)
 input.addEventListener('focusout', () => {
   document.addEventListener('click', focusOUT);
 })
@@ -142,15 +150,14 @@ function makeFetchURL(city) {
 }
 
 let cityList = []
-async function displayMatches(event) {
-  if (event.code != 'Enter') return;
-
+async function displayMatches() {
   const city = input.value;
   cityList = await getCitiesList(city);
   const html = cityList.map(place => {
     return `<li>${place.cityName}</li>`;
   }).join('');
   suggestions.innerHTML = html;
+
 }
 
 async function getCitiesList(city) {
