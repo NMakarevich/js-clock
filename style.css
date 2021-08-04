@@ -214,6 +214,11 @@ input {
   outline: none;
 }
 
+input::placeholder {
+  color: black;
+  font-size: 14px;
+}
+
 .search {
   flex-shrink: 0;
   width: 32px;
@@ -233,7 +238,7 @@ input {
 .suggestions {
   padding: 0;
   position: absolute;
-  top: 40px;
+  top: 43px;
   width: 200px;
   max-height: 100px;
   overflow-y: scroll;
@@ -243,7 +248,7 @@ input {
 .suggestions li {
   padding: 5px;
   background-color: #e5e5e5;
-  cursor: auto;
+  cursor: pointer;
 }
 
 .suggestions li:hover {

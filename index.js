@@ -54,7 +54,7 @@ function clockTemplate(number) {
     <div class="city-container">
       <p class="city-name">Москва</p>
       <div class="input-field" hidden>
-        <input type="text" name="" >
+        <input type="text" name="city-input" placeholder="Введите город">
         <button type="button" class="search"></button>
       </div>
       <ul class="suggestions" hidden="false"></ul>
@@ -123,9 +123,7 @@ function hiddenToggle() {
 
 cityName.addEventListener('click', () => {
   hiddenToggle();
-  input.value = cityName.textContent;
   input.focus();
-  input.select();
 })
 
 function focusOUT(event) {
@@ -136,6 +134,11 @@ function focusOUT(event) {
 }
 
 searchButton.addEventListener('click', displayMatches)
+input.addEventListener('keydown', (e) => {
+  if (e.code == 'Enter') {
+    displayMatches();
+  }
+})
 input.addEventListener('focusout', () => {
   document.addEventListener('click', focusOUT);
 })
@@ -151,13 +154,18 @@ function makeFetchURL(city) {
 
 let cityList = []
 async function displayMatches() {
-  const city = input.value;
-  cityList = await getCitiesList(city);
-  const html = cityList.map(place => {
-    return `<li>${place.cityName}</li>`;
-  }).join('');
+  const city = input.value; 
+  let html = ''
+  if (!city) {
+    html = `<li>Введите название города</li>`
+  }
+  else {
+    cityList = await getCitiesList(city);
+    html = cityList.map(place => {
+      return `<li>${place.cityName}</li>`;
+    }).join('');
+  }
   suggestions.innerHTML = html;
-
 }
 
 async function getCitiesList(city) {
@@ -175,7 +183,7 @@ async function getCitiesList(city) {
 
 function selectCity(event) {
   const target = event.target.closest('li');
-  if (!target) return;
+  if (!target || target.textContent == "Введите название города") return;
   const timezone = cityList.find(item => item.cityName == target.textContent)['timeZone'].slice(0,3);
   utc = parseInt(timezone)
   cityName.textContent = target.textContent.split(',')[0];
