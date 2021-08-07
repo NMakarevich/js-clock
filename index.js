@@ -157,13 +157,18 @@ async function displayMatches() {
   const city = input.value; 
   let html = ''
   if (!city) {
-    html = `<li>Введите название города</li>`
+    html = `<li class="no-click">Введите название города</li>`
   }
   else {
     cityList = await getCitiesList(city);
-    html = cityList.map(place => {
-      return `<li>${place.cityName}</li>`;
-    }).join('');
+    if (!cityList.length) {
+      html = `<li class="no-click">Город не найден</li>`
+    }
+    else {
+      html = cityList.map(place => {
+        return `<li>${place.cityName}</li>`;
+      }).join('');
+    }
   }
   suggestions.innerHTML = html;
 }
@@ -183,7 +188,7 @@ async function getCitiesList(city) {
 
 function selectCity(event) {
   const target = event.target.closest('li');
-  if (!target || target.textContent == "Введите название города") return;
+  if (!target || target.classList.contains('no-click')) return;
   const timezone = cityList.find(item => item.cityName == target.textContent)['timeZone'].slice(0,3);
   utc = parseInt(timezone)
   cityName.textContent = target.textContent.split(',')[0];
