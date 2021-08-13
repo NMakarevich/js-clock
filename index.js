@@ -1,11 +1,6 @@
-const MONTH = ['января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'];
-const DAY = ['воскресенье', 'понедельник', 'вторник', 'среда', 'четверг', 'пятница', 'суббота'];
 let clockCounter = 0;
 
-const addButton = document.querySelector('.add-button');
 const clockContainer = document.querySelector('.container');
-
-//addButton.addEventListener('click', addClock)
 
 function addClock() {
   clockCounter++
@@ -17,6 +12,11 @@ function createElement(html) {
   div.innerHTML = html;
   return div.firstElementChild;
 }
+
+addClock();
+
+const hourSigns = document.querySelectorAll('.hour-sign');
+hourSigns.forEach((hourSign, index) => hourSign.style.transform = `rotate(${30 * index}deg)`)
 
 function clockTemplate(number) {
   return `<div class="wrapper">
@@ -43,13 +43,13 @@ function clockTemplate(number) {
           <li class="minute min-hand"></li>
           <li class="hour hour-hand"></li>
         </ul>
-        <div class="digit-clock">
-          <ul>
-            <li class="time"></li>
-            <li class="date"></li>
-          </ul>
-        </div>
       </div>
+    </div>
+    <div class="digit-clock">
+      <ul>
+        <li class="time"></li>
+        <li class="date"></li>
+      </ul>
     </div>
     <div class="city-container">
       <p class="city-name">Москва</p>
@@ -86,9 +86,6 @@ function setTime() {
   const seconds = newDate.getSeconds();
   const minutes = newDate.getMinutes();
   const hours = newDate.getHours();
-  const date = newDate.getDate();
-  const month = newDate.getMonth();
-  const year = newDate.getFullYear();
 
   const secondHandPosition = (seconds / 60) * 360;
   const minHandPosition = (minutes / 60) * 360;
@@ -98,14 +95,16 @@ function setTime() {
   minHand.style.transform = `rotate(${minHandPosition}deg)`
   hourHand.style.transform = `rotate(${hourHandPosition}deg)`
 
+  let options = {
+    weekday: 'long',
+    year: 'numeric', 
+    month: 'long', 
+    day: 'numeric'
+  }
+
   digitTime.innerHTML = newDate.toLocaleTimeString();
-  digitDate.innerHTML = `${date} ${MONTH[month]} ${year}`
+  digitDate.innerHTML = newDate.toLocaleDateString('ru-RU', options).split(', ').reverse().join(', ')
 }
-
-addClock();
-
-const hourSigns = document.querySelectorAll('.hour-sign');
-hourSigns.forEach((hourSign, index) => hourSign.style.transform = `rotate(${30 * index}deg)`)
 
 const inputField = document.querySelector('.input-field');
 const input = document.querySelector('input')
